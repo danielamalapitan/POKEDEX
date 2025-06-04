@@ -23,7 +23,7 @@ const getWeakness = (types) => {
   return weaknesses.size > 0 ? Array.from(weaknesses).join(", ") : "None";
 };
 
-const PokemonDetails = ({pokemon, onClose}) => {
+const PokemonDetails = ({pokemon, onClose, onNext, onPrev, hasNext, hasPrev}) => {
   if (!pokemon) return null;
 
   return (
@@ -36,6 +36,8 @@ const PokemonDetails = ({pokemon, onClose}) => {
         >
           ✖
         </button>
+
+      
 
         <h2 className="text-2xl font-bold">#{pokemon.id} {pokemon.name.toUpperCase()}</h2>
         <p className="text-gray-500">Type: {pokemon.types.join(", ")}</p>
@@ -52,7 +54,30 @@ const PokemonDetails = ({pokemon, onClose}) => {
               <li key={stat.name} className="text-lg">{stat.name}: {stat.value}</li>
             ))}
           </ul>
+
+
+<div className="flex justify-between items-center mt-6">
+  <button
+    onClick={onPrev}
+    disabled={!hasPrev}
+    className="py-2 px-4 rounded font-medium border text-gray-900 bg-white hover:border-blue-600 hover:bg-blue-400 hover:text-white disabled:opacity-50"
+  >
+    ⪻ Previous
+  </button>
+  
+  <button
+    onClick={onNext}
+    disabled={!hasNext}
+    className="py-2 px-4 rounded font-medium border text-gray-900 bg-white hover:border-blue-600 hover:bg-blue-400 hover:text-white disabled:opacity-50"
+  >
+    Next ⪼
+  </button>
+</div>
+
+
+
         </div>
+        
       </div>
     </div>
   );

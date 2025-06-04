@@ -36,8 +36,8 @@ const typeColors = {
   dragon: "from-green-600 to-green-800 border-green-800",
 };
 
-  const PokemonCard = ({ pokemon, onNavigate, hasPrev, hasNext }) => {
-  const [isOpen, setIsOpen] = useState(false); 
+  const PokemonCard = ({ pokemon, onNavigate, hasPrev, hasNext, onNext, onPrev, isOpen, setIsOpen, onSelect}) => {
+  //const [isOpen, setIsOpen] = useState(false); 
   const mainType = pokemon.types[0];
   const gradientClass = typeColors[mainType] || "from-gray-300 to-gray-500 border-gray-800";
 
@@ -46,7 +46,8 @@ const typeColors = {
 
       <div
         className={`bg-gradient-to-b ${gradientClass} border-4 rounded-lg p-4 shadow-lg text-center text-white cursor-pointer`}
-        onClick={() => setIsOpen(true)} 
+       // onClick={() => setIsOpen(true)} 
+          onClick={() => onSelect(pokemon)}
       >
         
         <h3 className="text-xs font-bold opacity-80" style={{color: "black"}}>#{pokemon.id}</h3>
@@ -80,6 +81,26 @@ const typeColors = {
                 <li key={stat.name} className="text-sm">{stat.name}: {stat.value}</li>
               ))}
             </ul>
+<div className="flex justify-between items-center mt-6">
+  <button
+    onClick={onPrev}
+    disabled={!hasPrev}
+    className="py-2 px-4 rounded font-medium border text-gray-900 bg-white hover:border-blue-600 hover:bg-blue-400 hover:text-white disabled:opacity-50"
+  >
+    ⪻ Previous
+  </button>
+  
+  <button
+    onClick={onNext}
+    disabled={!hasNext}
+    className="py-2 px-4 rounded font-medium border text-gray-900 bg-white hover:border-blue-600 hover:bg-blue-400 hover:text-white disabled:opacity-50"
+  >
+    Next ⪼
+  </button>
+</div>
+
+          
+  
           </div>
         </div>
       )}

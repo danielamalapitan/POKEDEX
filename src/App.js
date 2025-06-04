@@ -11,23 +11,23 @@ const POKE_API = "https://pokeapi.co/api/v2/pokemon";
 const IMAGE_URL = (id) => `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${id}.png`;
 
 export default function App() {
-  const [pokemonList, setPokemonList] = useState([]);
-  const [offset, setOffset] = useState(0);
-  const [search, setSearch] = useState("");
-  const [selectedPokemon, setSelectedPokemon] = useState(null);
-  const [sortOption, setSortOption] = useState("id-asc"); 
-  const [filterType, setFilterType] = useState(""); 
+  const [pokemonList, setPokemonList] = useState([]); //pokemon data
+  const [offset, setOffset] = useState(0); //pagination
+  const [search, setSearch] = useState(""); //searching
+  const [selectedPokemon, setSelectedPokemon] = useState(null); //currently selected
+  const [sortOption, setSortOption] = useState("id-asc");  //sort
+  const [filterType, setFilterType] = useState("");   //filter
 
-  useEffect(() => {
+  useEffect(() => {    
     fetchPokemon(0);
   }, []);
 
   const fetchPokemon = async (newOffset) => {
     try {
-      const response = await fetch(`${POKE_API}?limit=10&offset=${newOffset}`);
-      const data = await response.json();
+      const response = await fetch(`${POKE_API}?limit=10&offset=${newOffset}`);  //fetch num
+      const data = await response.json();                                        //fetch data
 
-      const pokemonDetails = await Promise.all(
+      const pokemonDetails = await Promise.all(  
         data.results.map(async (pokemon) => {
           const detailsResponse = await fetch(pokemon.url);
           const details = await detailsResponse.json();
@@ -43,7 +43,7 @@ export default function App() {
         })
       );
 
-      setPokemonList((prev) => {
+      setPokemonList((prev) => {  //current list of pokemon
         const existingIds = new Set(prev.map((p) => p.id));
         const uniquePokemon = pokemonDetails.filter((p) => !existingIds.has(p.id));
         return [...prev, ...uniquePokemon];
@@ -69,7 +69,7 @@ export default function App() {
     }
 
     else if (direction === "prev" && currentIndex > 0) {
-        console.log(`Current Index: ${currentIndex}, Previous Index: ${currentIndex - 1}`);
+      console.log(`Current Index: ${currentIndex}, Previous Index: ${currentIndex - 1}`);
       setSelectedPokemon(pokemonList[currentIndex - 1]); 
     }
   };
@@ -194,7 +194,16 @@ export default function App() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mt-10">
         {filteredList.map((pokemon) => (
-          <PokemonCard key={pokemon.id} pokemon={pokemon} onNavigate={handleNextPrev} />
+        //  <PokemonCard key={pokemon.id} pokemon={pokemon} onNavigate={handleNextPrev} /> 
+          <PokemonCard
+  key={pokemon.id}
+  pokemon={pokemon}
+  onSelect={(p) => setSelectedPokemon(p)}
+  onNext={() => handleNextPrev(pokemon.id, "next")}
+  onPrev={() => handleNextPrev(pokemon.id, "prev")}
+  hasNext={pokemonList.findIndex(p => p.id === pokemon.id) < pokemonList.length - 1}
+  hasPrev={pokemonList.findIndex(p => p.id === pokemon.id) > 0}
+/>
         ))}
       </div>
 
@@ -209,6 +218,10 @@ export default function App() {
         <PokemonDetails
           pokemon={selectedPokemon}
           onClose={() => setSelectedPokemon(null)}
+    onNext={() => handleNextPrev(selectedPokemon.id, "next")}
+    onPrev={() => handleNextPrev(selectedPokemon.id, "prev")}
+    hasNext={hasNext}
+    hasPrev={hasPrev}
         />
       )}
     </div>
